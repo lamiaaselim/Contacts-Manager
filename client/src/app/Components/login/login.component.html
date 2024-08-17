@@ -1,0 +1,32 @@
+<div class="container py-5">
+  <h1 class="text-center">Welcome Login Page 🥰</h1>
+</div>
+<div class="container">
+  <form (ngSubmit)="login()" class="container">
+    <div class="form-group my-3">
+      <label for="username">Username:</label>
+      <input
+        type="text"
+        class="form-control"
+        id="username"
+        [(ngModel)]="username"
+        name="username"
+        required
+      />
+    </div>
+    <div class="form-group my-3">
+      <label for="password">Password:</label>
+      <input
+        type="password"
+        class="form-control"
+        id="password"
+        [(ngModel)]="password"
+        name="password"
+        required
+      />
+    </div>
+    <div class="d-flex justify-content-center">
+      <button type="submit" class="btn btn-primary my-2">Login</button>
+    </div>
+  </form>
+</div>
