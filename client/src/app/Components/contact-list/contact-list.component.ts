@@ -26,6 +26,7 @@ export class ContactListComponent implements OnInit {
       limit: 5,
     };
     this.contactService.getContacts(params).subscribe((data) => {
+      console.log(data);
       if (data && Array.isArray(data.contacts)) {
         this.contacts = data.contacts;
         this.totalPages = data.totalPages;

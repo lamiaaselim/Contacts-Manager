@@ -1,6 +1,6 @@
 # Contacts Manager
 
-This project is a Contacts Manager  application built with MEAN Stack. It includes various middlewares for security, logging, and compression, as well as rate limiting. The project also uses Bootstrap for styling.
+This project is a Contacts Manager  application built with MEAN Stack. It includes various middlewares for security, logging, and compression, as well as real time app. The project also uses Bootstrap for styling.
 
 ## Table of Contents
 
@@ -12,44 +12,84 @@ This project is a Contacts Manager  application built with MEAN Stack. It includ
 
 1. Clone the repository:
    ```sh
-   git clone 
+   git clone https://github.com/lamiaaselim/Contacts-Manager
    ```
-2. Navigate to the project directory:
+- **1. Server Side**:   
+1. Navigate to the project directory:
    ```sh
-   cd APP
+   cd server
    ```
-3. Install dependencies:
+2. Install dependencies:
+   ```sh
+   npm install
+   ```
+
+- **2. Client Side**:   
+1. Navigate to the project directory:
+   ```sh
+   cd client
+   ```
+2. Install dependencies:
    ```sh
    npm install
    ```
 
 ## Usage
-
+- **1. Server Side**:   
 1. Start the development server:
    ```sh
    npm run dev
    ```
 2. Open your browser and go to `http://localhost:8080` to see the application in action.
 
+- **1. Client Side**:   
+1. Navigate to the src directory:
+   ```sh
+   cd src
+   ```
+1. Start the development server:
+   ```sh
+   ng serve
+   ```
+2. Open your browser and go to `http://localhost:4200` to see the application in action.
+
+
 ## Features
 
 - **ExpressJS**: Utilizes the lightweight and flexible Express framework.
 - **API Integration**: Fetches data from external APIs and renders it on the server.
 - **Bootstrap**: Bootstrap for styling.
-- **MVC Architecture**:
+- **MVC Architecture For Server Side**:
 
   ```sh
-  APP/
-  ├── controllers/ # Controllers for handling requests
-  ├── middlewares/ # Custom middleware
-  ├── models/ # Database models
-  ├── routes/ # Express routes
-  ├── .gitignore # Git ignore file
-  ├── app.js # Main application file
-  ├── package.json # NPM dependencies and scripts
-  └── README.md # Project documentation
-
+  APP Contact/
+  ├── 
+   server/
+   ├── controllers/ # Controllers for handling requests
+   ├── middlewares/ # Custom middleware
+   ├── models/ # Database models
+   ├── routes/ # Express routes
+   ├── .gitignore # Git ignore file
+   ├── app.js # Main application file
+   ├── package.json # NPM dependencies and scripts
   ```
+
+  - **LIFT principle Architecture For client Side**:
+  ```sh
+  APP Contact/
+  ├── 
+   client/
+      ├── 
+      src/
+         ├── 
+         app/
+         ├── components/ # Reusable UI components
+         ├── guards/ # Enforce authentication and authorization rules.
+         ├── services/ # Handle data fetching and business logic.
+         ├── interface/ # Define contracts for components, services, and data structures.
+         ├── app.module.ts # The main application module, importing necessary components, services, and configurations.
+  ```
+
 
 - **MongoDB**: MongoDB for the database.
 - **Security and Performance Includes**:
