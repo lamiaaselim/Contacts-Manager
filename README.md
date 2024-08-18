@@ -1,6 +1,6 @@
 # Contacts Manager
 
-This project is a Contacts Manager  application built with MEAN Stack. It includes various middlewares for security, logging, and compression, as well as real time app. The project also uses Bootstrap for styling.
+This project is a Contacts Manager application built with MEAN Stack. It includes various middlewares for security, logging, and compression, as well as real time app. The project also uses Bootstrap for styling.
 
 ## Table of Contents
 
@@ -14,7 +14,9 @@ This project is a Contacts Manager  application built with MEAN Stack. It includ
    ```sh
    git clone https://github.com/lamiaaselim/Contacts-Manager
    ```
-- **1. Server Side**:   
+
+- **1. Server Side**:
+
 1. Navigate to the project directory:
    ```sh
    cd server
@@ -24,7 +26,8 @@ This project is a Contacts Manager  application built with MEAN Stack. It includ
    npm install
    ```
 
-- **2. Client Side**:   
+- **2. Client Side**:
+
 1. Navigate to the project directory:
    ```sh
    cd client
@@ -35,14 +38,17 @@ This project is a Contacts Manager  application built with MEAN Stack. It includ
    ```
 
 ## Usage
-- **1. Server Side**:   
+
+- **1. Server Side**:
+
 1. Start the development server:
    ```sh
    npm run dev
    ```
 2. Open your browser and go to `http://localhost:8080` to see the application in action.
 
-- **1. Client Side**:   
+- **2. Client Side**:
+
 1. Navigate to the src directory:
    ```sh
    cd src
@@ -51,8 +57,7 @@ This project is a Contacts Manager  application built with MEAN Stack. It includ
    ```sh
    ng serve
    ```
-2. Open your browser and go to `http://localhost:4200` to see the application in action.
-
+1. Open your browser and go to `http://localhost:4200` to see the application in action.
 
 ## Features
 
@@ -63,7 +68,7 @@ This project is a Contacts Manager  application built with MEAN Stack. It includ
 
   ```sh
   APP Contact/
-  ├── 
+  ├──
    server/
    ├── controllers/ # Controllers for handling requests
    ├── middlewares/ # Custom middleware
@@ -75,13 +80,14 @@ This project is a Contacts Manager  application built with MEAN Stack. It includ
   ```
 
   - **LIFT principle Architecture For client Side**:
+
   ```sh
   APP Contact/
-  ├── 
+  ├──
    client/
-      ├── 
+      ├──
       src/
-         ├── 
+         ├──
          app/
          ├── components/ # Reusable UI components
          ├── guards/ # Enforce authentication and authorization rules.
@@ -90,9 +96,22 @@ This project is a Contacts Manager  application built with MEAN Stack. It includ
          ├── app.module.ts # The main application module, importing necessary components, services, and configurations.
   ```
 
-
 - **MongoDB**: MongoDB for the database.
 - **Security and Performance Includes**:
+
   - Morgan for HTTP request logging.
   - Compression for response compression.
   - Error handling and 404 middlewares.
+
+- **Enviroment Variables**: to test our app, you need our .env file that contains:
+  -Set the environment to development or production
+  NODE_ENV="development"
+
+  -Server configuration
+  PORT = 8080
+
+  -Database configuration
+  DB_CONNECTION_STRING = 'mongodb://127.0.0.1:27017/ContactManager'
+
+  -JWT configuration
+  JWT_SECRET='jwtSecret'

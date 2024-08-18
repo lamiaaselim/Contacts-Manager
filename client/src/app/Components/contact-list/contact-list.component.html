@@ -29,7 +29,7 @@
           </tr>
         </thead>
         <tbody>
-          <tr *ngFor="let contact of filteredContacts" class="text-center">
+          <tr *ngFor="let contact of filteredContacts" class="text-center" [class.locked]="lockedContacts.has(contact._id)">
             <td>{{ contact.name }}</td>
             <td>{{ contact.phone }}</td>
             <td>{{ contact.address }}</td>
@@ -38,6 +38,7 @@
               <button
                 class="btn btn-primary me-2 my-2"
                 (click)="onEditContact(contact._id)"
+                [disabled]="lockedContacts.has(contact._id)"
               >
                 Edit
               </button>

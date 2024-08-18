@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { ContactService } from './../../Services/contact.service';
 import { Contact } from './../../interface/contact';
+import { SocketService } from 'src/app/Services/socket.service';
 
 @Component({
   selector: 'app-contact-details',
@@ -10,6 +11,7 @@ import { Contact } from './../../interface/contact';
 })
 export class ContactDetailsComponent implements OnInit {
   contactId: string | null = null;
+  lockedContacts: Set<string> = new Set();
   contact: Contact = {
     _id: '',
     name: '',
@@ -24,6 +26,7 @@ export class ContactDetailsComponent implements OnInit {
   constructor(
     private route: ActivatedRoute,
     private contactService: ContactService,
+    private socketService: SocketService ,
     private router: Router
   ) {}
 
@@ -44,6 +47,8 @@ export class ContactDetailsComponent implements OnInit {
         this.contactService.getContact(this.contactId).subscribe({
           next: (contact) => {
             this.contact = contact;
+            // Emit a lock event to the server
+            this.socketService.lockContact(this.contactId as string);
           },
           error: (err) => {
             console.error('Failed to load contact', err);
@@ -51,6 +56,17 @@ export class ContactDetailsComponent implements OnInit {
         });
       }
     }
+
+    this.socketService.onContactLocked((contactId: string) => {
+      if (contactId !== this.contactId) {
+        this.lockedContacts.add(contactId);
+      }
+    });
+
+    this.socketService.onContactUnlocked((contactId: string) => {
+      this.lockedContacts.delete(contactId);
+    });
+
   }
 
   saveContact(): void {
@@ -86,4 +102,11 @@ export class ContactDetailsComponent implements OnInit {
       });
     }
   }
+
+  ngOnDestroy(): void {
+    if (this.contactId) {
+      this.socketService.unlockContact(this.contactId as string);
+    }
+  }
+
 }

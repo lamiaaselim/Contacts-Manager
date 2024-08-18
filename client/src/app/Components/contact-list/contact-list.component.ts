@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { ContactService } from './../../Services/contact.service';
 import { Router } from '@angular/router';
+import { SocketService } from 'src/app/Services/socket.service';
 
 @Component({
   selector: 'app-contact-list',
@@ -10,14 +11,23 @@ import { Router } from '@angular/router';
 export class ContactListComponent implements OnInit {
   contacts: any[] = [];
   filteredContacts: any[] = [];
+  lockedContacts: Set<string> = new Set();
   currentPage = 1;
   totalPages = 0;
   filterText = '';
 
-  constructor(private contactService: ContactService, private router: Router) {}
+  constructor(private contactService: ContactService, private socketService: SocketService , private router: Router) {}
 
   ngOnInit(): void {
     this.getContacts();
+
+    this.socketService.onContactLocked((contactId) => {
+      this.lockedContacts.add(contactId);
+    });
+
+    this.socketService.onContactUnlocked((contactId) => {
+      this.lockedContacts.delete(contactId);
+    });
   }
 
   getContacts(): void {
@@ -63,7 +73,14 @@ export class ContactListComponent implements OnInit {
     });
   }
   onEditContact(_id: any) {
-    this.router.navigate(['contacts', _id]);
+    if (this.lockedContacts.has(_id)) {
+      alert('This contact is currently being edited by another user.');
+      return;
+    }
+
+    this.socketService.lockContact(_id);
+    this.router.navigate(['contacts',_id]);
+    // this.router.navigate(['contacts', _id]);
   }
 
   onDeleteContact(contact: any): void {
