@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
 import { ContactService } from './../../Services/contact.service';
 import { Router } from '@angular/router';
 import { SocketService } from 'src/app/Services/socket.service';
@@ -16,19 +16,31 @@ export class ContactListComponent implements OnInit {
   totalPages = 0;
   filterText = '';
 
-  constructor(private contactService: ContactService, private socketService: SocketService , private router: Router) {}
+  constructor(
+    private contactService: ContactService,
+    private socketService: SocketService,
+    private router: Router,
+    private cdr: ChangeDetectorRef // Inject ChangeDetectorRef
+  ) {}
 
   ngOnInit(): void {
     this.getContacts();
 
     this.socketService.onContactLocked((data) => {
+      console.log('Contact locked event received:', data);
       this.lockedContacts.add(data.contactId);
       this.updateContactStatus(data.contactId, true);
     });
 
     this.socketService.onContactUnlocked((data) => {
+      console.log('Contact unlocked event received:', data);
       this.lockedContacts.delete(data.contactId);
       this.updateContactStatus(data.contactId, false);
+    });
+
+    this.socketService.onContactUpdated((updatedContact) => {
+      console.log('Contact updated event received:', updatedContact); // Debugging line
+      this.updateContactInList(updatedContact);
     });
   }
 
@@ -38,7 +50,7 @@ export class ContactListComponent implements OnInit {
       limit: 5,
     };
     this.contactService.getContacts(params).subscribe((data) => {
-      console.log(data);
+      console.log('Contacts data received:', data);
       if (data && Array.isArray(data.contacts)) {
         this.contacts = data.contacts;
         this.totalPages = data.totalPages;
@@ -74,6 +86,7 @@ export class ContactListComponent implements OnInit {
       return nameMatch || phoneMatch || addressMatch || notesMatch;
     });
   }
+
   onEditContact(_id: any) {
     if (this.lockedContacts.has(_id)) {
       alert('This contact is currently being edited by another user.');
@@ -81,7 +94,7 @@ export class ContactListComponent implements OnInit {
     }
 
     this.socketService.lockContact(_id);
-    this.router.navigate(['contacts',_id]);
+    this.router.navigate(['contacts', _id]);
   }
 
   onDeleteContact(contact: any): void {
@@ -95,11 +108,43 @@ export class ContactListComponent implements OnInit {
   onAddContact(): void {
     this.router.navigate(['contacts/new']);
   }
+
   private updateContactStatus(contactId: string, isLocked: boolean): void {
-    const contact = this.contacts.find(contact => contact._id === contactId);
+    const contact = this.contacts.find((contact) => contact._id === contactId);
     if (contact) {
       contact.isLocked = isLocked;
       this.applyFilter();
+      console.log('Contact status updated:', contact);
+    }
   }
-}
+
+  private updateContactInList(updatedContact: any): void {
+    const index = this.contacts.findIndex(
+      (contact) => contact._id === updatedContact._id
+    );
+    if (index !== -1) {
+      // Create a new object for the updated contact
+      const updatedContactWithNewReference = {
+        ...this.contacts[index], // Spread the existing contact properties
+        ...updatedContact // Overwrite with the updated contact properties
+      };
+
+      // Replace the contact in the contacts array
+      this.contacts = [
+        ...this.contacts.slice(0, index),
+        updatedContactWithNewReference,
+        ...this.contacts.slice(index + 1),
+      ];
+
+      // Update the filteredContacts to ensure the UI is updated
+      this.filteredContacts = [...this.contacts];
+      this.cdr.detectChanges(); // Manually trigger change detection
+      console.log('Contact list updated:', this.contacts); // Debugging line
+    }
+  }
+
+
+  trackByContactId(index: number, contact: any): string {
+    return contact._id; // or return any unique identifier for each contact
+  }
 }
