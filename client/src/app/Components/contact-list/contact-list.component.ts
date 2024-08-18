@@ -21,12 +21,14 @@ export class ContactListComponent implements OnInit {
   ngOnInit(): void {
     this.getContacts();
 
-    this.socketService.onContactLocked((contactId) => {
-      this.lockedContacts.add(contactId);
+    this.socketService.onContactLocked((data) => {
+      this.lockedContacts.add(data.contactId);
+      this.updateContactStatus(data.contactId, true);
     });
 
-    this.socketService.onContactUnlocked((contactId) => {
-      this.lockedContacts.delete(contactId);
+    this.socketService.onContactUnlocked((data) => {
+      this.lockedContacts.delete(data.contactId);
+      this.updateContactStatus(data.contactId, false);
     });
   }
 
@@ -80,7 +82,6 @@ export class ContactListComponent implements OnInit {
 
     this.socketService.lockContact(_id);
     this.router.navigate(['contacts',_id]);
-    // this.router.navigate(['contacts', _id]);
   }
 
   onDeleteContact(contact: any): void {
@@ -94,4 +95,11 @@ export class ContactListComponent implements OnInit {
   onAddContact(): void {
     this.router.navigate(['contacts/new']);
   }
+  private updateContactStatus(contactId: string, isLocked: boolean): void {
+    const contact = this.contacts.find(contact => contact._id === contactId);
+    if (contact) {
+      contact.isLocked = isLocked;
+      this.applyFilter();
+  }
+}
 }

@@ -1,13 +1,19 @@
 import { Injectable } from '@angular/core';
 import { io, Socket } from 'socket.io-client';
-import { Observable, BehaviorSubject } from 'rxjs';
 
+interface LockContactData {
+  contactId: string;
+  userId: string;
+}
+
+interface UnlockContactData {
+  contactId: string;
+}
 
 @Injectable({
   providedIn: 'root'
 })
 export class SocketService {
-
   private socket: Socket;
 
   constructor() {
@@ -15,18 +21,18 @@ export class SocketService {
   }
 
   lockContact(contactId: string) {
-    this.socket.emit('lockContact', contactId);
+    this.socket.emit('lock_contact', { contactId, userId: this.socket.id });
   }
 
   unlockContact(contactId: string) {
-    this.socket.emit('unlockContact', contactId);
+    this.socket.emit('unlock_contact', { contactId });
   }
 
-  onContactLocked(callback: (contactId: string) => void) {
-    this.socket.on('contactLocked', callback);
+  onContactLocked(callback: (data: LockContactData) => void) {
+    this.socket.on('contact_locked', callback);
   }
 
-  onContactUnlocked(callback: (contactId: string) => void) {
-    this.socket.on('contactUnlocked', callback);
+  onContactUnlocked(callback: (data: UnlockContactData) => void) {
+    this.socket.on('contact_unlocked', callback);
   }
 }

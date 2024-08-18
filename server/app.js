@@ -11,6 +11,7 @@ const ErrorMiddleware = require("./Middelwares/ErrorMW");
 const authenticateMW = require("./Middelwares/authenticateMW");
 const contactRouter = require("./routes/contactRoute");
 const userRouter = require("./routes/userRoute");
+const socketController = require('./Controller/socketController');
 
 dotenv.config();
 
@@ -23,7 +24,10 @@ const io = socketIo(server, {
     methods: ['GET', 'POST'],
     allowedHeaders: ['Content-Type'],
     credentials: true,
-  }});
+  }
+});
+
+socketController.init(io);  // Initialize the socketController with the io instance
 
 let lockedContacts = {};
 

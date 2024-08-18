@@ -1,11 +1,25 @@
-const { io } = require("./../socket");
+// Controller/socketController.js
 
-// Function to emit an event when a contact is locked
-exports.lockContact = (contactId) => {
-  io.emit("contactLocked", contactId);
-};
+let ioInstance = null;
 
-// Function to emit an event when a contact is unlocked
-exports.unlockContact = (contactId) => {
-  io.emit("contactUnlocked", contactId);
+function init(io) {
+  ioInstance = io;
+}
+
+function lockContact(contactId) {
+  if (ioInstance) {
+    ioInstance.emit('contact_locked', { contactId });
+  }
+}
+
+function unlockContact(contactId) {
+  if (ioInstance) {
+    ioInstance.emit('contact_unlocked', { contactId });
+  }
+}
+
+module.exports = {
+  init,
+  lockContact,
+  unlockContact
 };

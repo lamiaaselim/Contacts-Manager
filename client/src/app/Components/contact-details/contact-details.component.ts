@@ -57,16 +57,6 @@ export class ContactDetailsComponent implements OnInit {
       }
     }
 
-    this.socketService.onContactLocked((contactId: string) => {
-      if (contactId !== this.contactId) {
-        this.lockedContacts.add(contactId);
-      }
-    });
-
-    this.socketService.onContactUnlocked((contactId: string) => {
-      this.lockedContacts.delete(contactId);
-    });
-
   }
 
   saveContact(): void {

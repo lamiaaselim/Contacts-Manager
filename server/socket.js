@@ -1,24 +1,32 @@
-const http = require("http");
 const { Server } = require("socket.io");
-const app = require("./app"); // Import the Express app
 
-// Create an HTTP server using the Express app
-const serverSocket = http.createServer(app);
+let io;
 
-// Initialize `socket.io` with the HTTP server
-const io = new Server(serverSocket, {
-  cors: {
-    origin: "*", // Adjust this according to your CORS settings
-    methods: ["GET", "POST"],
+module.exports = {
+  init: (server) => {
+    io = new Server(server, {
+      cors: {
+        origin: "http://localhost:4200", // Update as needed
+        methods: ["GET", "POST"],
+        allowedHeaders: ["Content-Type"],
+        credentials: true,
+      },
+    });
+
+    io.on("connection", (socket) => {
+      console.log("New client connected:", socket.id);
+
+      socket.on("disconnect", () => {
+        console.log("Client disconnected:", socket.id);
+      });
+    });
+
+    return io;
   },
-});
-
-io.on("connection", (socket) => {
-  console.log("A user connected");
-
-  socket.on("disconnect", () => {
-    console.log("User disconnected");
-  });
-});
-
-module.exports = { serverSocket, io };
+  getIO: () => {
+    if (!io) {
+      throw new Error("Socket.io not initialized!");
+    }
+    return io;
+  },
+};
